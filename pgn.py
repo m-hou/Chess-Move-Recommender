@@ -80,51 +80,20 @@ class PGNGame(object):
     def __repr__(self):
         return '<PGNGame "%s" vs "%s">' % (self.white, self.black)
 
-
-class GameStringIterator(object):
-    """
-        Iterator containing multiline strings
-        that represent games from a PGN file
-    """
-
-    def __init__(self, file_name):
-        """
-            Args:
-                file_name (str): PGN file name
-        """
-        self.file_name = file_name
-        self.file_iter = iter(open(self.file_name))
-        self.game_lines = []
-        self.end = False
-
-    def __iter__(self):
-        """doc"""
-        return self
-
-    def __next__(self):
-        """doc"""
-        if self.end is True:
-            raise StopIteration
+def generate_games_str(file):
+    """doc"""
+    with open(file) as f:
         try:
             while True:
-                line = self.file_iter.__next__()
-                if line.startswith("[Event"):
-                    if len(self.game_lines) == 0:
-                        self.game_lines.append(line)
-                        continue
-                    else:
-                        game_lines = self.game_lines[:]
-                        self.game_lines = []
-                        self.game_lines.append(line)
-                        game_str = "".join(game_lines)
-                        return game_str
-                else:
-                    self.game_lines.append(line)
+                lines = [next(f)]
+                line = next(f)
+                while not line.startswith("[Event"):
+                    line = next(f)
+                    if line != "\n":
+                        lines.append(line)
+                yield loads("".join(lines))[0]
         except StopIteration:
-            game_lines = self.game_lines[:]
-            game_str = "".join(game_lines)
-            self.end = True
-            return game_str
+            pass
 
 
 class GameIterator(object):
@@ -137,7 +106,8 @@ class GameIterator(object):
             Args:
                 file_name (str): PGN file name
         """
-        self.game_str_iterator = GameStringIterator(file_name)
+        self.file_name = file_name
+        self.game_generator = generate_games_str(self.file_name)
 
     def __iter__(self):
         """doc"""
@@ -145,8 +115,7 @@ class GameIterator(object):
 
     def __next__(self):
         """doc"""
-        for game_str in self.game_str_iterator:
-            game = loads(game_str)[0]
+        for game in self.game_generator:
             return game
         raise StopIteration
 
