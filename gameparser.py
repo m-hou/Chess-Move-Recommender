@@ -5,6 +5,7 @@ FILE_NAME = "ficsgamesdb_201701_standard2000_nomovetimes_1465638.pgn"
 LARGE_FILE_NAME = "ficsgamesdb_201701_chess_nomovetimes_1465381.pgn"
 
 def addGamesToDB():
+    """doc"""
     conn = sqlite3.connect("games.sqlite")
     c = conn.cursor()
     for index, game in enumerate(pgn.GameIterator(LARGE_FILE_NAME)):
