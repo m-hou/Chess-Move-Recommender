@@ -10,4 +10,4 @@ def queryDB(moves):
     return count
 
 moves = input('Enter moves: ')
-print(*queryDB(moves))
+print(*queryDB(moves + "%"))
