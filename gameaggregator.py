@@ -1,6 +1,6 @@
 import sqlite3
 
-def queryDB(moves):
+def popularMoves(moves):
     """doc"""
     conn = sqlite3.connect("games.sqlite")
     c = conn.cursor()
@@ -16,4 +16,4 @@ def queryDB(moves):
     return count
 
 moves = input('Enter moves: ')
-print(*queryDB(moves))
+print(*popularMoves(moves))
