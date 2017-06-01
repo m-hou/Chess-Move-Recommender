@@ -1,6 +1,18 @@
 import sqlite3
+import time
+from functools import update_wrapper
 
 DB = "games.sqlite"
+
+def timedcall(f):
+    def timedcall_f(*arg, **kw):
+        """doc"""
+        start = time.time()
+        res = f(*arg, **kw)
+        end = time.time()
+        return (end - start), res, f.__name__
+    update_wrapper(timedcall_f, f)
+    return timedcall_f
 
 def queryDB(query, *args):
     """doc"""
@@ -11,6 +23,7 @@ def queryDB(query, *args):
     conn.close()
     return count
 
+@timedcall
 def winningMoves(moves):
     """doc"""
     return queryDB(
@@ -35,7 +48,7 @@ def winningMoves(moves):
         LIMIT 20
         """, (len(moves) + 3, len(moves) + 4, ",", moves + "%"))
 
-
+@timedcall
 def popularMoves(moves):
     """doc"""
     return queryDB(
