@@ -42,9 +42,9 @@ def winningMoves(moves):
             SUBSTR(Moves, ?, INSTR(SUBSTR(Moves, ?), ?)) AS nextmove,
             ROUND(
                 SUM(
-                    CASE WHEN Result = '1-0' THEN 1
+                    CASE WHEN Result = '1-0' THEN ?
                     WHEN Result = '1/2-1/2' THEN 0.5
-                    WHEN Result = '0-1' THEN 0
+                    WHEN Result = '0-1' THEN ?
                     ELSE 0
                     END
                 ) / count(*),
@@ -56,7 +56,7 @@ def winningMoves(moves):
         GROUP BY nextmove
         ORDER BY winrate DESC
         LIMIT 20
-        """, (len(moves) + 3, len(moves) + 4, ",", moves + "%"))
+        """, (len(moves) + 3, len(moves) + 4, ",", (len(moves) + 1) % 2, len(moves) % 2 , moves + "%"))
 
 @timedcall
 def popularMoves(moves):
