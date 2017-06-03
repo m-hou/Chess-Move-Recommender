@@ -1,18 +1,51 @@
 import pgn
 import sqlite3
+import sys, getopt
 
-FILE_NAME = "ficsgamesdb_201701_standard2000_nomovetimes_1465638.pgn"
-LARGE_FILE_NAME = "ficsgamesdb_201701_chess_nomovetimes_1465381.pgn"
-
-def addGamesToDB():
+def addGamesToDB(inputfile, outputfile, clear=False):
     """doc"""
-    conn = sqlite3.connect("games.sqlite")
+    conn = sqlite3.connect(outputfile)
     c = conn.cursor()
-    for index, game in enumerate(pgn.GameIterator(LARGE_FILE_NAME)):
+    if clear:
+        c.execute("DELETE FROM Games")
+    for index, game in enumerate(pgn.GameIterator(inputfile)):
         g = (game.result, game.blackelo, game.whiteelo, game.timecontrol, ", ".join(game.moves[:-2]))
         c.execute("INSERT INTO Games VALUES (?,?,?,?,?)", g)
         print(index)
     conn.commit()
     conn.close()
 
-addGamesToDB()
+def main():
+    exceptedFormat = "gameparser.py [-o] <inputfile.pgn> <outputfile.sqlite>"
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "i:o:", ["input=", "output=", "clear"])
+    except getopt.GetoptError as err:
+        print(err)
+        print(exceptedFormat)
+        sys.exit(2)
+
+    clear = False
+    inputFile = None
+    outputFile = None
+    for opt, arg in opts:
+        if opt == "--clear":
+            clear = True
+        elif opt in ("-i", "--input"):
+            inputFile = arg
+        elif opt in ("-o", "--output"):
+            outputFile = arg
+        else:
+            assert False, "unhandled option"
+    try:
+        addGamesToDB(inputFile, outputFile, clear)
+    except FileNotFoundError:
+        print("file not found")
+    except IOError:
+        print(exceptedFormat)
+        sys.exit(2)
+    except TypeError:
+        print(exceptedFormat)
+        sys.exit(2)
+
+if __name__ == "__main__":
+    main()
