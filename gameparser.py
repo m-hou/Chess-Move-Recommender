@@ -16,7 +16,7 @@ def addGamesToDB(inputfile, outputfile, clear=False):
     conn.close()
 
 def main():
-    exceptedFormat = "gameparser.py [-o] <inputfile.pgn> <outputfile.sqlite>"
+    exceptedFormat = "gameparser.py -i <inputfile.pgn> -o <outputfile.sqlite> [--clear]"
     try:
         opts, args = getopt.getopt(sys.argv[1:], "i:o:", ["input=", "output=", "clear"])
     except getopt.GetoptError as err:
