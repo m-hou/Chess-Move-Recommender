@@ -9,7 +9,7 @@ def addGamesToDB(inputfile, outputfile, clear=False):
     if clear:
         c.execute("DELETE FROM Games")
     for index, game in enumerate(pgn.GameIterator(inputfile)):
-        g = (game.result, game.blackelo, game.whiteelo, game.timecontrol, ", ".join(game.moves[:-2]))
+        g = (game.result, game.blackelo, game.whiteelo, game.timecontrol, ", " + ", ".join(game.moves[:-2]))
         c.execute("INSERT INTO Games VALUES (?,?,?,?,?)", g)
         print(index)
     conn.commit()
