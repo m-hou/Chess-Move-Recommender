@@ -70,6 +70,7 @@ def main():
     readFile = args[0]
     try:
         moves = input('Enter moves: ')
+        moves = moves.strip(" ")
         if moves != "":
             moves = ", " + moves
         print(*popularMoves(moves, readFile))
