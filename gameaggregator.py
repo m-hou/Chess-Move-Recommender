@@ -92,6 +92,8 @@ def main():
     readFile = args[0]
     try:
         moves = input('Enter moves: ')
+        if moves != "":
+            moves = ", " + moves
         print(*popularMoves(moves, readFile))
         print(*winningMoves(moves, readFile))
     except FileNotFoundError:
