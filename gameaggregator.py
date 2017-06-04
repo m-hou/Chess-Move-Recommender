@@ -1,29 +1,8 @@
 import sqlite3
-import time
-from functools import update_wrapper
 import sys, getopt
+import tools
 
 DB = "games.sqlite"
-
-def decorator(d):
-    """doc"""
-    def _d(fn):
-        return update_wrapper(d(fn), fn)
-    update_wrapper(_d, d)
-    return _d
-
-decorator = decorator(decorator)
-
-@decorator
-def timedcall(f):
-    def timedcall_f(*arg, **kw):
-        """doc"""
-        start = time.time()
-        res = f(*arg, **kw)
-        end = time.time()
-        print("%s took %fs to execute." % (f.__name__, end - start))
-        return res
-    return timedcall_f
 
 def queryDB(query, readFile, *args):
     """doc"""
@@ -34,7 +13,7 @@ def queryDB(query, readFile, *args):
     conn.close()
     return count
 
-@timedcall
+@tools.timedcall
 def winningMoves(moves, readFile):
     """doc"""
     moveCount = len(moves.split(", ")) - 1
@@ -62,7 +41,7 @@ def winningMoves(moves, readFile):
         readFile,
         (len(moves) + 3, len(moves) + 4, ",", (moveCount + 1) % 2, moveCount % 2, moves + "%"))
 
-@timedcall
+@tools.timedcall
 def popularMoves(moves, readFile):
     """doc"""
     return queryDB(
