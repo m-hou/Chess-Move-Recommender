@@ -38,7 +38,6 @@ def queryDB(query, readFile, *args):
 def winningMoves(moves, readFile):
     """doc"""
     moveCount = len(moves.split(", ")) - 1
-    print(moveCount)
     return queryDB(
         """
         SELECT
