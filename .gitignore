@@ -167,3 +167,5 @@ ENV/
 
 *.pgn
 *.sqlite
+
+/other files
