@@ -8,10 +8,14 @@ def addGamesToDB(inputfile, outputfile, clear=False):
     c = conn.cursor()
     if clear:
         c.execute("DELETE FROM Games")
+    gamesParsed = 0
     for index, game in enumerate(pgn.GameIterator(inputfile)):
         g = (game.result, game.blackelo, game.whiteelo, game.timecontrol, ", " + ", ".join(game.moves[:-2]))
         c.execute("INSERT INTO Games VALUES (?,?,?,?,?)", g)
-        print(index)
+        gamesParsed = index + 1
+        if gamesParsed % 1000 == 0:
+            print(gamesParsed)
+    print(str(gamesParsed) + " games parsed")
     conn.commit()
     conn.close()
 
