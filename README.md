@@ -11,13 +11,13 @@ gameparser.py parses a pgn file and imports the data into a SQLite file. gameagg
 ### Usage
 
 Step 1:
-Find a pgn file online from a game database. I used [FICS Games Database]( http://ficsgames.org/cgi-bin/download.cgi).
+Find a pgn file online from a game database. I used [FICS Games Database](http://ficsgames.org/download.html).
 
 Step 2:
 Create a sqlite file with a table named 'Games' and the rows 'Result', 'BlackElo', 'WhiteElo', 'TimeControl', 'Moves'.
 Create statement:
 ```
-CREATE TABLE `Games` ( `Result` TEXT NOT NULL, `BlackElo` INTEGER NOT NULL, `WhiteElo` INTEGER NOT NULL, `TimeControl` TEXT NOT NULL, `Moves` TEXT NOT NULL )
+CREATE TABLE `Games` ( `Result` TEXT NOT NULL, `BlackElo` INTEGER NOT NULL, `WhiteElo` INTEGER NOT NULL, `TimeControl` TEXT NOT NULL, `Moves` TEXT NOT NULL );
 ```
 
 Step 3:
