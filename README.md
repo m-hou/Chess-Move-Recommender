@@ -29,7 +29,11 @@ such as indexing and other SQL optimizations; however, NoSQL (MongoDB) or GraphD
 Step 1:
 Find a pgn file online from a game database. I used [FICS Games Database]( http://ficsgames.org/cgi-bin/download.cgi).
 Step 2:
-Create a sqlite file with a table named 'Games' and the rows 'Result', 'BlackElo', 'WhiteElo', 'TimeControl', 'Moves'
+Create a sqlite file with a table named 'Games' and the rows 'Result', 'BlackElo', 'WhiteElo', 'TimeControl', 'Moves'.
+Create statement:
+```
+CREATE TABLE `Games` ( `Result` TEXT NOT NULL, `BlackElo` INTEGER NOT NULL, `WhiteElo` INTEGER NOT NULL, `TimeControl` TEXT NOT NULL, `Moves` TEXT NOT NULL )
+```
 Step 3:
 Run gameparser.py to populate the sqlite db
 Step 4:
@@ -38,13 +42,14 @@ Run gameaggregator.py to get statistics
 *Note: gameaggrator.py will ask for a move input, enter moves as csv.
 
 Here's what you can expect:
+```
 $ python gameaggregator.py games.sqlite
 Enter moves: e4, e5, Nf3
 popularMoves took 29.160880s to execute.
 ('Nc6', 830161) ('d6', 321124) ('Nf6', 133265) ('Bc5', 34465) ('d5', 32538) ('f5', 25298) ('Qf6', 19188) ('f6', 6870) ('Bd6', 6828) ('Qe7', 4619) ('', 2768) ('c6', 2311) ('b6', 989) ('c5', 682) ('g6', 656) ('h6', 622) ('a6', 566) ('Bb4', 383) ('Be7', 301) ('Ne7', 168)
 winningMoves took 31.386538s to execute.
 ('f5', 0.5327) ('d5', 0.4941) ('Nf6', 0.4929) ('Nc6', 0.4737) ('', 0.4669) ('Qe7', 0.4394) ('d6', 0.4362) ('Qf6', 0.4352) ('Bc5', 0.4266) ('Bd6', 0.414) ('c6', 0.3992) ('c5', 0.3717) ('b5', 0.371) ('Be7', 0.3405) ('b6', 0.3367) ('g6', 0.3361) ('h6', 0.3352) ('a6', 0.3339) ('f6', 0.2779) ('a5', 0.2761)
-
+```
 Output can be read as:
 popularMoves: (move, frequency of move)
 winningMoves: (move, winrate)
