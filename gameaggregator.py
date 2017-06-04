@@ -1,6 +1,7 @@
 import sqlite3
 import time
 from functools import update_wrapper
+import sys, getopt
 
 DB = "games.sqlite"
 
@@ -24,9 +25,9 @@ def timedcall(f):
         return res
     return timedcall_f
 
-def queryDB(query, *args):
+def queryDB(query, readFile, *args):
     """doc"""
-    conn = sqlite3.connect(DB)
+    conn = sqlite3.connect(readFile)
     c = conn.cursor()
     c.execute(query, *args)
     count = c.fetchall()
@@ -34,7 +35,7 @@ def queryDB(query, *args):
     return count
 
 @timedcall
-def winningMoves(moves):
+def winningMoves(moves, readFile):
     """doc"""
     return queryDB(
         """
@@ -56,10 +57,12 @@ def winningMoves(moves):
         GROUP BY nextmove
         ORDER BY winrate DESC
         LIMIT 20
-        """, (len(moves) + 3, len(moves) + 4, ",", (len(moves) + 1) % 2, len(moves) % 2 , moves + "%"))
+        """,
+        readFile,
+        (len(moves) + 3, len(moves) + 4, ",", (len(moves) + 1) % 2, len(moves) % 2, moves + "%"))
 
 @timedcall
-def popularMoves(moves):
+def popularMoves(moves, readFile):
     """doc"""
     return queryDB(
         """
@@ -72,8 +75,27 @@ def popularMoves(moves):
         GROUP BY nextmove
         ORDER BY count(*) DESC
         LIMIT 20
-        """, (len(moves) + 3, len(moves) + 4, ",", moves + "%"))
+        """,
+        readFile,
+        (len(moves) + 3, len(moves) + 4, ",", moves + "%"))
 
-moves = input('Enter moves: ')
-print(*popularMoves(moves))
-print(*winningMoves(moves))
+def main():
+    exceptedFormat = "gameaggregator.py <readfile.sqlite>"
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "")
+    except getopt.GetoptError as err:
+        print(err)
+        print(exceptedFormat)
+        sys.exit(2)
+    readFile = args[0]
+    try:
+        moves = input('Enter moves: ')
+        print(*popularMoves(moves, readFile))
+        print(*winningMoves(moves, readFile))
+    except FileNotFoundError:
+        print("file not found")
+
+if __name__ == "__main__":
+    main()
+
+
