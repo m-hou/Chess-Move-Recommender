@@ -37,6 +37,8 @@ def queryDB(query, readFile, *args):
 @timedcall
 def winningMoves(moves, readFile):
     """doc"""
+    moveCount = len(moves.split(", ")) - 1
+    print(moveCount)
     return queryDB(
         """
         SELECT
@@ -59,7 +61,7 @@ def winningMoves(moves, readFile):
         LIMIT 20
         """,
         readFile,
-        (len(moves) + 3, len(moves) + 4, ",", (len(moves) + 1) % 2, len(moves) % 2, moves + "%"))
+        (len(moves) + 3, len(moves) + 4, ",", (moveCount + 1) % 2, moveCount % 2, moves + "%"))
 
 @timedcall
 def popularMoves(moves, readFile):
