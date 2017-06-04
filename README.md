@@ -1,45 +1,32 @@
 # Chess Move Recommender
 
-This repository contains the backend prototype for a chess move recommender browser extension that aggregates data about next possible moves given the list of previous moves played.
+This repository contains the backend prototype for a chess move recommender browser extension that aggregates data about next possible moves given a list of previously played moves.
+
 
 ### Overview
 
-gameparser.py parses a pgn file and imports the data into a sqlite file. gameaggregator.py takes a sqlite file and queries it for different statistics. It queries for the most popular moves and the strongest moves (based on winrate)
+gameparser.py parses a pgn file and imports the data into a SQLite file. gameaggregator.py takes a SQLite file and queries it for different statistics. Currently, it can show the most popular moves and the highest win rate moves.
 
-### Next Steps
-
-Currently, I am working on a Chrome extension take observes DOM changes on a chess website to get the moves and pass it to my backend, which will be this prototype as a Flask/Django app. The extension will render the data on the side of the page and provide real time data visualization for next possible moves.
-
-Some other challenges include back-end preformance. I have timed function calls set up on gameaggregator.py
-and so far I am getting:
-
-On 955k rows:
-~4s/query with the move input ""
-~1s/query with the move input "e4, e5"
-
-On 12.4m rows:
-~120s/query with the move input ""
-~40s/query with the move input "e4, e5"
-
-As you can tell, these response times would be sub-optimal. I am currently investigating some different solutions
-such as indexing and other SQL optimizations; however, NoSQL (MongoDB) or GraphDBs (Neo4j) may be the way to go. 
 
 ### Usage
 
 Step 1:
 Find a pgn file online from a game database. I used [FICS Games Database]( http://ficsgames.org/cgi-bin/download.cgi).
+
 Step 2:
 Create a sqlite file with a table named 'Games' and the rows 'Result', 'BlackElo', 'WhiteElo', 'TimeControl', 'Moves'.
 Create statement:
 ```
 CREATE TABLE `Games` ( `Result` TEXT NOT NULL, `BlackElo` INTEGER NOT NULL, `WhiteElo` INTEGER NOT NULL, `TimeControl` TEXT NOT NULL, `Moves` TEXT NOT NULL )
 ```
-Step 3:
-Run gameparser.py to populate the sqlite db
-Step 4:
-Run gameaggregator.py to get statistics
 
-*Note: gameaggrator.py will ask for a move input, enter moves as csv.
+Step 3:
+Run gameparser.py to populate the SQLite database.
+
+Step 4:
+Run gameaggregator.py to get statistics.
+
+*Note: gameaggrator.py will ask for a move input, enter moves as comma seperated values.
 
 Here's what you can expect:
 ```
@@ -54,7 +41,28 @@ Output can be read as:
 popularMoves: (move, frequency of move)
 winningMoves: (move, winrate)
 
+
+### Next Steps
+
+Currently, I am working on a Chrome extension take observes DOM changes on a chess website to get the moves and pass it to my backend, which will be this prototype as a Flask/Django app. The extension will render the data on the side of the page and provide real-time data visualization for next possible moves.
+
+Some other challenges include back-end performance. I have timed function calls set up on gameaggregator.py
+and so far I am getting:
+
+On 955k rows:
+~4s/query with the move input ""
+~1s/query with the move input "e4, e5"
+
+On 12.4m rows:
+~120s/query with the move input ""
+~40s/query with the move input "e4, e5"
+
+As you can tell, these response times are sub-optimal. I am currently investigating some different solutions
+such as indexing and other SQL optimizations; however, NoSQL (MongoDB) or GraphDBs (Neo4j) may be the way to go.
+
+
 ### Contributors
 
-My friend [Austin](https://github.com/ahendy) for playing chess with me and inspring me to start this project along with encouraging me to try out Python
-[Renatopp's PGNParser](https://github.com/renatopp/pgnparser), which I am using to help parse PGN files. The parser only works for Python 2.7, so I updated it (in my repo as pgn.py) to work for 3.6.
+My friend [Austin](https://github.com/ahendy) for playing chess with me and inspiring me to start this project along with encouraging me to try out Python.
+
+[Renatopp's PGNParser](https://github.com/renatopp/pgnparser), which I am using to help parse PGN files. The parser is written in Python 2.7, so I updated it (in my repo as pgn.py) to work for 3.6.
